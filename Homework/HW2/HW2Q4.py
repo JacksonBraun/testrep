@@ -27,7 +27,9 @@ def driver():
     p = 0
 
 
-    (X1,Y1) = funcgenHW2(theta,R,delta, f, p)
+    [X1, Y1] = funcgenHW2(theta,R,delta, f, p)
+
+
 
 
 
@@ -36,17 +38,18 @@ def driver():
 
 
     delta = .05
-    X2 = np.ndarray([n][10])
-    Y2 = np.ndarray([n][10])
-    for i in range(0,10):
+    X2 = np.ndarray((10,n))
+    Y2 = np.ndarray((10,n))
+    for i in range(10):
         R = i
         f = 2 + i
         p = np.random.uniform(0,2)
 
-        (X2,Y2) = funcgenHW2(theta,R,delta, f, p)
+        [X2[i][:],Y2[i][:]]= funcgenHW2(theta,R,delta, f, p)
         
-        plt.plot(X2[:][i],Y1[:][i])
-        plt.show()
+        plt.plot(X2[i][:],Y2[i][:])
+        print("iteration: ", i)
+    plt.show()
 
 
 
@@ -61,8 +64,8 @@ def driver():
 #return: X,Y
 def funcgenHW2(theta, R, delta, f, p):
 
-    X = lambda theta: R*(1 + delta*np.sin(f*theta + p))*np.cos(theta)
-    Y = lambda theta: R*(1 + delta*np.sin(f*theta + p))*np.sin(theta)
-    return X,Y
+    X =  R*(1 + delta*np.sin(f*theta + p))*np.cos(theta)
+    Y =  R*(1 + delta*np.sin(f*theta + p))*np.sin(theta)
+    return [X, Y]
 
 driver()

@@ -48,7 +48,7 @@ def driver():
         [X2[i][:],Y2[i][:]]= funcgenHW2(theta,R,delta, f, p)
         
         plt.plot(X2[i][:],Y2[i][:])
-        print("iteration: ", i)
+   
     plt.show()
 
 

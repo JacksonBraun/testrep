@@ -7,7 +7,7 @@ def bisection(f,a,b,n,tol):
     err = 0
     if fa*fb < 0:
         i =0
-        while(i < n & abs(a-b) >2*tol):
+        while(i < n ):
             xn = (b+a)/2
             fx = f(xn)
             if fx*fa < 0:
@@ -21,7 +21,7 @@ def bisection(f,a,b,n,tol):
                 err = 1
                 return [x,i,err]
             i = i+1
-            if (a - b >2*tol):
+            if (abs(a - b) < tol):
                 x = xn
                 err = 1
                 return [x,i,err]

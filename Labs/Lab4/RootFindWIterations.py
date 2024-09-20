@@ -34,12 +34,70 @@ def findconvRate(p,pact):
 
     return [fit,diff1,diff2]
 
-def AitkenDelSq(p):
+def AitkenDelSq(g,x0,n,tol):
     i = 0
+    x1 = g(x0)
+    p = np.zeros((n,1))
     phat = np.zeros(len(p)-2)
-    for i in range(len(p)-2):
-        phat[i] = p[i] - (((p[i+1]-p[i])**2)/(p[i+2] -p[i+1]+p[i]))
-    return phat
+    # if converges in first 3, same as fixed point, then goes into aitkens meth which is when err = 2. Checks the phat deferences to insure that 
+    while(i<n):
+        if i<=2:
+            if(abs(x1 - x0)<2*tol):
+                xcrit = x1
+                err  =1
+                p[i] = x1
+                return [xcrit,i,err,p]
+            x0 = x1
+            
+        elif i>2:
+            phat[i-2] = p[i-2] - ((p[i-1] - p[i-2])**2)/(p[i] -2*p[i-1]+p[i-2])
+            if(abs(phat[i-2] - phat[i-3]) < tol):
+                xcrit = phat[i-2]
+                err = 2
+                return[xcrit,i-2,err,phat]
+            x0 = phat[i-2]
+            
+        x1 = g(x0)
+        i = i + 1
+    if(abs(phat[i-2] - phat[i-3]) < tol):
+        xcrit = phat[i-2]
+        err = 2
+        return[xcrit,i-2,err,phat]
+    else:
+        xcrit = phat[i-2]
+        err = 0
+        return[xcrit,i-2,err,phat]
+
+
+
+
+
+def steffensons(g,x0,n,tol):
+    i = 0
+    p = np.zeros((n,1))
+    p[0] = x0
+    while(i<n):
+        a = p[i]
+        b = g(a)
+        c = g(b)
+        p[i+1] = a - ((b-a)**2)/(c - 2*b + a)
+        if (abs(p[i+1]-p[i]) < tol):
+            xcrit = p[i+1]
+            err =1
+            return[xcrit,i+1,err,p]
+        i = i+1
+    if(abs(p[i+1]-p[i]) < tol):
+        xcrit = p[i+1]
+        err =1
+        return[xcrit,i+1,err,p]
+    else:
+        xcrit = p[i+1]
+        err = 0 
+        return[xcrit,i+1,err,p]
+
+
+        
+
 
 
 

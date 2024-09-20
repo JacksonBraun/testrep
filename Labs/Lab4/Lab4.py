@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from RootFindWIterations import fixedpntIts
 from RootFindWIterations import findconvRate
 from RootFindWIterations import AitkenDelSq
+from RootFindWIterations import steffensons
 
 def driver():
     #2.1
@@ -32,9 +33,29 @@ def driver():
 
     [fit,diff1,diff2] = findconvRate(p1,ptrue)
 
-    phat = AitkenDelSq(p1)
 
-    [fit2,diff12,diff22] = findconvRate(phat,ptrue)
+
+    [xcritAit,iAit,errAit,pAit] = AitkenDelSq(g,x0,n,tol)
+    
+
+    print("Using Aitkens Method")
+    print("The crit point is: ", xcritAit)
+    print("Iterations taken: ",iAit)
+    print("Error Message Reads: ", errAit)
+    [fitAit,diff1Ait,diff2Ait] = findconvRate(pAit,ptrue)
+
+
+    [xcritStev,iStev,errStev,pStev] = steffensons(g,x0,n,tol)
+
+    print("Using Steffenson's Method")
+    print("The crit point is: ", xcritStev)
+    print("Iterations taken: ",iStev)
+    print("Error Message Reads: ", errStev)
+    [fitAit,diff1Ait,diff2Ait] = findconvRate(pStev,ptrue)
+
+
+
+
 
 
 

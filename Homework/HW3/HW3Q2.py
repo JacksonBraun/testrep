@@ -3,6 +3,7 @@ import math as math
 import matplotlib.pyplot as plt
 from RootFind import fixedpoint
 from RootFind import bisection
+from RootFind import bisectionClass
 
 def driver():
 
@@ -20,7 +21,10 @@ def driver():
     print("Iterations needed: ", i1)
     print("Error message (1 = worked, 0 = failed): ", err1)
 
-    [xcrit2, i2, err2] = bisection(f2,a,b,n,tol)
+
+    a = 4.82
+    b = 5.2
+    [xcrit2, i2, err2] = bisectionClass(f2,a,b,tol)
 
     print("The found root for 2b is: ", xcrit2)
     print("Iterations needed: ", i2)

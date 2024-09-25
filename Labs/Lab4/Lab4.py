@@ -23,14 +23,12 @@ def driver():
 
     n = np.linspace(0,i,i)
     p1 = np.zeros(i)
-    print(p1)
     ptrue = 1.3652300134140976
     for k in range(i):
         p1[k] = p[k]
 
-    plt.scatter(n,np.log(abs(ptrue-p1)))
-    plt.show()
-
+    # plt.scatter(n,np.log(abs(ptrue-p1)))
+    # plt.show()
     [fit,diff1,diff2] = findconvRate(p1,ptrue)
 
 

@@ -101,7 +101,7 @@ def fixedpntIts(g,x0,n,tol):
     while(i < n):
         if(abs(x1 - x0)<2*tol):
             xcrit = x1
-            err  =1
+            err  = 0 
             p[i] = x1
             return [xcrit,i,err,p]
         p[i] = x0

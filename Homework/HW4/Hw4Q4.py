@@ -9,19 +9,22 @@ def driver():
     a = 3
     b = 5
 
-    m =2
+    m =3
 
     x = np.linspace(a,b,100)
     n = 50
-    tol = 1e-16
+    tol = 1e-8
     x0 = 4
 
 
-    f = lambda x: np.exp(3*x) - (27 * x**6) +(27 * (x**4) * np.exp(x)) - (9*(x**2)*np.exp(2*x))
-    df = lambda x: 3*np.exp(3*x) - 162*x**5 + (108*(x**3)*np.exp(x)) + (27 * (x**4) * np.exp(x)) - (18 * (x**2)*np.exp(2*x)) - (18 * x *np.exp(2*x))
+    f = lambda x: -(3*x**2-np.exp(x))**3
+    df = lambda x: -3*((3*x**2-np.exp(x))**2)*(6*x-np.exp(x))
+    ddf = lambda x: 9*(np.exp(x)-3*x**2)*(np.exp(2*x)-(x**2 + 8*x +2)*np.exp(x) + 30*x**2)
 
 
     g1 = lambda x: f(x)/df(x)
+    dg1 = lambda x: 1-(f(x)*ddf(x)/(df(x)**2))
+
     g2 = lambda x: x-m*f(x)/df(x)
 
 
@@ -43,7 +46,7 @@ def driver():
 
 
 
-    [xcritNewtClass,iNewtClass,errNewtClass,pNewtClass] = Newton(g1,x0,n,tol)
+    [xcritNewtClass,pNewtClass,iNewtClass,errNewtClass] = Newton(g1,dg1,x0,n,tol)
 
     pNewtClassGood = cleanZeros(pNewtClass,iNewtClass)
 

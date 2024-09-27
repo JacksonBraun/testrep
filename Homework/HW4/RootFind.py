@@ -119,7 +119,7 @@ def secant(f,a,b,n,tol):
     p[0] = x0
     p[1] = x1
     for i in range(n-2):
-        x2 = x0 - f(x1)*(x1-x0)/(f(x1) - f(x0))
+        x2 = x1 - f(x1)*(x1-x0)/(f(x1) - f(x0))
         p[i+2] = x2
         if abs(x2-x1) < tol:
             xcrit = x2

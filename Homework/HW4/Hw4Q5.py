@@ -34,8 +34,43 @@ def driver():
     for j in range(iSec):
         print(j,"    |    ", pSec[j],"    |  ",abs(xcritSec-pSec[j]))
 
+
+
+    pNewtgood = cleanZeros(pNewt,iNewt)
+
+    ynewt = np.abs(pNewtgood[1::]-xcritNewt)
+    xnewt = np.abs(pNewtgood[0:-1]-xcritNewt)
+
+ 
+
+    plt.plot(ynewt,xnewt)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.title("Newton |x_k+1 - alpha| vs |x_k - alpha|")
+    plt.show()
+
+
+    pSecgood = cleanZeros(pSec,iSec)
+
+    ySec = np.abs(pSecgood[2::]-xcritSec)
+    xSec = np.abs(pSecgood[1:-1]-xcritSec)
+
+ 
+
+    plt.plot(ySec,xSec)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.title("Secant |x_k+1 - alpha| vs |x_k - alpha|")
+    plt.show()
+
     return
 
+
+def cleanZeros(p,i):
+    p1 = np.zeros(i)
+    for j in range(i):
+        p1[j] = p[j]
+    return p1
 
 
 driver()

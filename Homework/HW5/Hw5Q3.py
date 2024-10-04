@@ -1,5 +1,6 @@
 import numpy as np
 
+
 f = lambda x,y,z: x**2 + 4*y**2 + 4*z**2 - 16
 fx = lambda x: 2*x
 fy = lambda y: 8*y
@@ -40,3 +41,15 @@ print(y)
 print(z)
 
 print(f(x0,y0,z0))
+alpha = 0
+alphatrue =0
+diff1 = np.zeros(i-2)
+diff2 = np.zeros(i-2)
+for j in range(i-2):
+    diff1[j] = np.log(np.linalg.norm([x[j+1]-x0,y[j+1]-y0,z[j+1]-z0]))
+    diff2[j] = np.log(np.linalg.norm([x[j]-x0,y[j]-y0,z[j]-z0]))
+    
+fit =np.polyfit(diff2,diff1,1)
+
+
+print("alpha is: ", fit[0])

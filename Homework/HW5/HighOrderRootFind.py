@@ -8,7 +8,7 @@ def NewtonMultiVar(F,J,x0,n,tol,l):
     #p[0] = x0
 
     for i in range(n):
-        p1 = x0 - np.linalg.solve(J(x0),F(x0))
+        p1 = x0 - np.linalg.solve(J(x0), F(x0))
         #p[i] = p1
         if np.linalg.norm(p1 - x0) < tol :
             xcrit  = p1

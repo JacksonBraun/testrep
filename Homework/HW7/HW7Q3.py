@@ -32,6 +32,11 @@ def weightj(x,xj,N):
     wj = 1/wjden
     return wj
 
+def chebyshev_points(a,b,Nint):
+    k = np.arange(Nint)
+    chebyshev_pts = 0.5 * (b - a) * np.cos((2 * k + 1) * np.pi / (2 * Nint)) + 0.5 * (a + b)
+    return chebyshev_pts
+
 
 def driver():
     Neval = 1001
@@ -45,11 +50,10 @@ def driver():
 
 
 
-    for N in range(2,30):
+    for N in range(2,100):
 
-        xint = np.zeros(N)
-        for i in range(N):
-            xint[i] = np.cos((2*i - 1)*np.pi/(2*N))
+        xint = np.zeros(N+1)
+        xint = chebyshev_points(a,b,N)
         yint = f(xint)
         fBaryLam = np.zeros(Neval)
         for i in range(Neval):

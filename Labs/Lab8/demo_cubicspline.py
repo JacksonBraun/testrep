@@ -6,13 +6,14 @@ from numpy.linalg import norm
 
 
 def driver():
-    
-    f = lambda x: np.exp(x)
-    a = 0
+    f = lambda x: 1/(1+(10*x)**2)
+    a = -1
     b = 1
-    
+    """ create points you want to evaluate at"""
+    Neval = 1000
+    xeval = np.linspace(a,b,Neval)
     ''' number of intervals'''
-    Nint = 3
+    Nint = 4
     xint = np.linspace(a,b,Nint+1)
     yint = f(xint)
 
@@ -34,8 +35,8 @@ def driver():
     print('nerr = ', nerr)
     
     plt.figure()    
-    plt.plot(xeval,fex,'ro-',label='exact function')
-    plt.plot(xeval,yeval,'bs--',label='natural spline') 
+    plt.plot(xeval,fex,label='exact function')
+    plt.plot(xeval,yeval,label='natural spline') 
     plt.legend
     plt.show()
      
@@ -46,41 +47,67 @@ def driver():
     plt.show()
     
 def create_natural_spline(yint,xint,N):
+    #FORCE ALL h to be the same size, so equilaly spaced nodes
 
 #    create the right  hand side for the linear system
-    b = np.zeros(N+1)
+    b = np.zeros(N-1)
 #  vector values
     h = np.zeros(N+1)
-    h[0] = xint[i]-xint[i-1]  
+    h[0] = xint[1] - xint[0]
     for i in range(1,N):
        h[i] = xint[i+1] - xint[i]
-       b[i] = (yint[i+1]-yint[i])/h[i] - (yint[i]-yint[i-1])/h[i-1]
+       if not(h[i] == h[i-1]):
+            print("FUCK YOU MAN!!!!! YOU DONT NEED CHEBYSHEV NODES OR WHATEVER TF YOUR DOING")
+            return
+    
+
+    for i in range(1,N-1):
+        b[i] = (yint[i+2]-yint[i+1])/h[i] - (yint[i+1] - yint[i])/h[i]
 
 #  create the matrix A so you can solve for the M values
-    A = np.zeros((N+1,N+1))
+    A = np.zeros((N,N))
+
+    A[0, 0] =  4  # Natural spline boundary condition at the first point
+    for i in range(1, N-2):
+        A[i, i - 1] = 1
+        A[i, i] = 4
+        A[i, i + 1] = 1
+
+    A[N-1, N - 2] = 1
+    A[N-1, N-1] = 4
+
+    A = 1/12 * A
+
+
 
 #  Invert A    
-    Ainv = 
+    Ainv = inv(A)
 
-# solver for M    
-    M  = 
+# solver for M   
+    M = np.zeros(N+1)
+    M[0] = 0
+    M[N] = 0
+    M[1:-1]  = Ainv.dot(b)
     
 #  Create the linear coefficients
+    B = np.zeros(N)
     C = np.zeros(N)
-    D = np.zeros(N)
-    for j in range(N):
-       C[j] = # find the C coefficients
-       D[j] = # find the D coefficients
-    return(M,C,D)
+    for i in range(N-1):
+        B[i] = yint[i] - M[i]*(h[i]**2)/6
+        C[i] = yint[i+1] - M[i+1]*(h[i]**2)/6
+        return(M,B,C)
+    
        
-def eval_local_spline(xeval,xi,xip,Mi,Mip,C,D):
+def eval_local_spline(xeval,xi,xip,Mi,Mip,B,C):
 # Evaluates the local spline as defined in class
 # xip = x_{i+1}; xi = x_i
 # Mip = M_{i+1}; Mi = M_i
 
     hi = xip-xi
+
+    yeval = (1/hi)*((Mi*(xip - xeval)**3)/(6*hi) + (Mip*(xi - xeval)**3)/(6*hi) + B*(xip - xeval) + C*(xeval - xi))
    
-    yeval = 
+   
     return yeval 
     
     

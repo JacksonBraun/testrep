@@ -21,6 +21,11 @@ def BarryEvalLagrange(xeval,xint,yint,Nint):
 
     return yeval
 
+def monomial(xeval,xint,yint,N):
+    V = np.vander(xint)
+    a = np.linalg.solve(V, yint)
+    return np.polyval(a,xeval)
+
 
   
 
@@ -58,26 +63,47 @@ def driver():
         fBaryLam = np.zeros(Neval)
         for i in range(Neval):
             fBaryLam[i] = BarryEvalLagrange(xeval[i],xint,yint,N)
-        if np.max(fBaryLam) >= 100:
+        # if (N%3) == 0 :
+        #     plt.plot(xint,yint,'o')
+        #     plt.plot(xeval,fBaryLam)
+        #     plt.plot(xeval,f(xeval))
+        #     plt.title('Bary Lagrange Chebyshev with $N$ = {}'.format(N))
+        #     plt.xlabel('$x$')
+        #     plt.ylabel('$y$')
+        #     plt.legend(['Data','Polynomial','$f(x)$'])
+        #     plt.show()
+
+        #Now do it with monomial
+        
+    for N in range(2,100):
+
+        xint = np.zeros(N+1)
+        xint = chebyshev_points(a,b,N)
+        yint = f(xint)
+        fMon = np.zeros(Neval)
+        fMon = monomial(xeval,xint,yint,N)
+        
+        if np.max(fMon) >= 100:
             #this one is shit so plot it
             plt.plot(xint,yint,'o')
-            plt.plot(xeval,fBaryLam)
+            plt.plot(xeval,fMon)
             plt.plot(xeval,f(xeval))
-            plt.title('$N$ = {}'.format(N))
+            plt.title('Monomial Chebyshev $N$ = {}'.format(N))
             plt.xlabel('$x$')
             plt.ylabel('$y$')
             plt.legend(['Data','Polynomial','$f(x)$'])
             plt.show()
-        if (N%3) == 0 :
+        if (N%11) == 0 :
             plt.plot(xint,yint,'o')
-            plt.plot(xeval,fBaryLam)
+            plt.plot(xeval,fMon)
             plt.plot(xeval,f(xeval))
-            plt.title('$N$ = {}'.format(N))
+            plt.title('Monomial Chebyshev $N$ = {}'.format(N))
             plt.xlabel('$x$')
             plt.ylabel('$y$')
             plt.legend(['Data','Polynomial','$f(x)$'])
             plt.show()
-        
+
+
     
     return
 

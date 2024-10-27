@@ -13,7 +13,7 @@ def driver():
     Neval = 1000
     xeval = np.linspace(a,b,Neval)
     ''' number of intervals'''
-    Nint = 4
+    Nint = 9
     xint = np.linspace(a,b,Nint+1)
     yint = f(xint)
 
@@ -37,6 +37,7 @@ def driver():
     plt.figure()    
     plt.plot(xeval,fex,label='exact function')
     plt.plot(xeval,yeval,label='natural spline') 
+    plt.plot(xint,yint,"o")
     plt.legend
     plt.show()
      
@@ -50,33 +51,30 @@ def create_natural_spline(yint,xint,N):
     #FORCE ALL h to be the same size, so equilaly spaced nodes
 
 #    create the right  hand side for the linear system
-    b = np.zeros(N-1)
+ #    create the right  hand side for the linear system
+    b = np.zeros(N+1)
 #  vector values
-    h = np.zeros(N+1)
-    h[0] = xint[1] - xint[0]
+    h = np.zeros(N+1)  
     for i in range(1,N):
-       h[i] = xint[i+1] - xint[i]
-       if not(h[i] == h[i-1]):
-            print("FUCK YOU MAN!!!!! YOU DONT NEED CHEBYSHEV NODES OR WHATEVER TF YOUR DOING")
-            return
-    
-
-    for i in range(1,N-1):
-        b[i] = (yint[i+2]-yint[i+1])/h[i] - (yint[i+1] - yint[i])/h[i]
+       hi = xint[i]-xint[i-1]
+       hip = xint[i+1] - xint[i]
+       b[i] = (yint[i+1]-yint[i])/hip - (yint[i]-yint[i-1])/hi
+       h[i-1] = hi
+       h[i] = hip
 
 #  create the matrix A so you can solve for the M values
-    A = np.zeros((N,N))
+    A = np.zeros((N+1,N+1))
 
-    A[0, 0] =  4  # Natural spline boundary condition at the first point
-    for i in range(1, N-2):
-        A[i, i - 1] = 1
-        A[i, i] = 4
-        A[i, i + 1] = 1
+    A[0][0] =  1  # Natural spline boundary condition at the first point
+    for i in range(1, N):
+        A[i][i - 1] = h[i-1]/6
+        A[i][i] = (h[i]+h[i-1])/3
+        A[i][i + 1] = h[i+1]/6
+    A[N][N] = 1
 
-    A[N-1, N - 2] = 1
-    A[N-1, N-1] = 4
+    print(A)
 
-    A = 1/12 * A
+
 
 
 
@@ -84,28 +82,33 @@ def create_natural_spline(yint,xint,N):
     Ainv = inv(A)
 
 # solver for M   
-    M = np.zeros(N+1)
-    M[0] = 0
-    M[N] = 0
-    M[1:-1]  = Ainv.dot(b)
+  
+    M = Ainv.dot(b)
     
 #  Create the linear coefficients
-    B = np.zeros(N)
     C = np.zeros(N)
-    for i in range(N-1):
-        B[i] = yint[i] - M[i]*(h[i]**2)/6
-        C[i] = yint[i+1] - M[i+1]*(h[i]**2)/6
-        return(M,B,C)
+    D = np.zeros(N)
+
+
+    for i in range(N):
+        C[i] = yint[i]/h[i] - M[i]*(h[i])/6
+        D[i] = yint[i+1]/h[i] - M[i+1]*(h[i])/6
+
+    return(M,C,D)
     
        
-def eval_local_spline(xeval,xi,xip,Mi,Mip,B,C):
+def eval_local_spline(xeval,xi,xip,Mi,Mip,C,D):
 # Evaluates the local spline as defined in class
 # xip = x_{i+1}; xi = x_i
 # Mip = M_{i+1}; Mi = M_i
 
-    hi = xip-xi
+    # hi = xip-xi
 
-    yeval = (1/hi)*((Mi*(xip - xeval)**3)/(6*hi) + (Mip*(xi - xeval)**3)/(6*hi) + B*(xip - xeval) + C*(xeval - xi))
+    # yeval = ((Mi*(xip - xeval)**3)/(6*hi) + (Mip*(xeval-xi)**3)/(6*hi) + C*(xip - xeval) + D*(xeval - xi))
+
+    hi = xip-xi
+    yeval = (Mi*(xip-xeval)**3 +(xeval-xi)**3*Mip)/(6*hi) \
+    + C*(xip-xeval) + D*(xeval-xi)
    
    
     return yeval 
@@ -132,6 +135,6 @@ def  eval_cubic_spline(xeval,Neval,xint,Nint,M,C,D):
 
     return(yeval)
            
-driver()               
+driver()              
 
 

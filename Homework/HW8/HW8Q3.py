@@ -15,7 +15,7 @@ def driver():
     xeval = np.linspace(a,b,Neval+1)
     f = lambda x: np.sin(10*x)
     fp = lambda x: 10*np.cos(10*x)
-    Nint = 30
+    Nint = 20
     xint = np.linspace(a,b,Nint+1)
     yint = f(xint)
     ypint=fp(xint)

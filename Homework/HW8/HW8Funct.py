@@ -165,20 +165,25 @@ def create_clamed_spline(yint,xint,fp0,fpn,N):
        b[i] = (yint[i+1]-yint[i])/hip - (yint[i]-yint[i-1])/hi
        h[i-1] = hi
        h[i] = hip
-    b[0] = fp0
-    b[N] = fpn
+    b[0] = ((yint[1] - yint[0]) / h[0] - fp0)
+    b[N] = (fpn - (yint[N] - yint[N-1]) / h[N-1])
+    h[N] = h[N-1]
+    print("h[N] = ",h[N])
     # print(b)
     
 
 #  create the matrix A so you can solve for the M values
     A = np.zeros((N+1,N+1))
 
-    A[0][0] =  1  # Natural spline boundary condition at the first point
+    A[0][0] =  11*h[0]/6
+    A[0][1] = h[1]/6 # Natural spline boundary condition at the first point
     for i in range(1, N):
         A[i][i - 1] = h[i-1]/6
         A[i][i] = (h[i]+h[i-1])/3
         A[i][i + 1] = h[i+1]/6
-    A[N][N] = 1
+    A[N][N] = 11*h[N-1]/6
+    A[N][N-1] = h[N-1]/6
+    print(A)
     
     #print(A)
 

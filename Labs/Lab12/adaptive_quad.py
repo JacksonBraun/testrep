@@ -1,5 +1,6 @@
 # get lgwts routine and numpy
 from gauss_legendre import *
+import numpy as np
 
 # adaptive quad subroutines
 # the following three can be passed
@@ -10,12 +11,32 @@ def eval_composite_trap(M,a,b,f):
   put code from prelab with same returns as gauss_quad
   you can return None for the weights
   """
+  xint  = np.linspace(a,b,M)
+  w = np.ones(np.shape(xint))
+  w[0] = .5
+  w[M-1] = .5
+  yint = f(xint)
+  total = ((b - a)/(M-1))*np.sum(w*yint)
+  return total,xint,w
 
 def eval_composite_simpsons(M,a,b,f):
   """
   put code from prelab with same returns as gauss_quad
   you can return None for the weights
   """
+  xint = np.linspace(a,b,M)
+  print(xint)
+  w = np.ones(np.shape(xint))
+  yint = f(xint)
+  for i in range(1,M-2):
+      if (i%2 == 0):
+          w[i] = 4
+      else:
+          w[i] =2
+  
+  total = (1/3)*((b-a)/(M-1))*np.sum(w*yint)
+  
+  return total,xint,w
 
 def eval_gauss_quad(M,a,b,f):
   """
@@ -57,18 +78,18 @@ def adaptive_quad(a,b,f,tol,M,method):
   left_p = np.zeros((maxit,))
   right_p = np.zeros((maxit,))
   s = np.zeros((maxit,1))
-  left_p[0] = a; right_p[0] = b;
+  left_p[0] = a; right_p[0] = b
   # initial approx and grid
-  s[0],x,_ = method(M,a,b,f);
+  s[0],x,_ = method(M,a,b,f)
   # save grid
   X = []
   X.append(x)
-  j = 1;
-  I = 0;
-  nsplit = 1;
+  j = 1
+  I = 0
+  nsplit = 1
   while j < maxit:
     # get midpoint to split interval into left and right
-    c = 0.5*(left_p[j-1]+right_p[j-1]);
+    c = 0.5*(left_p[j-1]+right_p[j-1])
     # compute integral on left and right spilt intervals
     s1,x,_ = method(M,left_p[j-1],c,f); X.append(x)
     s2,x,_ = method(M,c,right_p[j-1],f); X.append(x)

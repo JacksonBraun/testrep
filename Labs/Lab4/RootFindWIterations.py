@@ -18,7 +18,7 @@ def fixedpntIts(g,x0,n,tol):
         i = i + 1
     xcrit = x1
     err = 1
-    return [xcrit,i,err]
+    return [xcrit,i,err,p]
 
 
 def findconvRate(p,pact):

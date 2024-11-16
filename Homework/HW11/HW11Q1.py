@@ -37,21 +37,30 @@ def driver():
 
     a = -5
     b = 5
-    k = 1000
-    N = 2*k
-    x = np.linspace(a,b,N+1)
+    Nt = 1291
+    k = 54
+    Ns = 2*k
+    xt = np.linspace(a,b,Nt+1)
+    xs = np.linspace(a,b,Ns+1)
     f = lambda x: 1/(1+x**2)
 
-    trapInt = trap(f,x,N)
+    trapInt = trap(f,xt,Nt)
 
-    simpint = simpsons(f,x,k)
+    simpint = simpsons(f,xs,k)
 
-    quad = scipy.integrate.quad(f,a,b)
+    quadnormal,errnorm,infodicnorm = scipy.integrate.quad(f,a,b,epsabs=10**(-6),full_output=True)
+    quadless,errless,infodicless = scipy.integrate.quad(f,a,b,epsabs=10**(-4),full_output=True)
+
+
 
 
     print("Trapizoidal Method: ", trapInt)
     print("Simpson's Method: ", simpint)
-    print("Scipy : ", quad)
+    print("Scipy Normal : ", quadnormal)
+    print("Scipy 10(-4) err : ", quadless)
+    print("info for normal: ", infodicnorm)
+    print("info for 10(-4): ", infodicless)
+
 
 
 
